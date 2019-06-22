@@ -45,7 +45,7 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: {{ include "piwigo.fullname" . }}
+            claimName: {{ .Values.persistence.existingClaim | default (include "piwigo.fullname" .) }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
