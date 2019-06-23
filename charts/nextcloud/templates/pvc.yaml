@@ -1,0 +1,19 @@
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "nextcloud.fullname" . }}
+  labels:
+{{ include "nextcloud.labels" . | indent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size | quote }}
+{{- if .Values.persistence.select }}
+  selector:
+    matchLabels:
+      pv: {{ .Values.persistence.select }}
+{{- end }}
+{{- end }}

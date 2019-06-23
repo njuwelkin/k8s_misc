@@ -1,0 +1,17 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: nextcloud1-pvc
+  labels:
+    app.kubernetes.io/name: nextcloud
+    app.kubernetes.io/instance: nextcloud1
+    app.kubernetes.io/version: "1.0"
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "200Gi"
+  selector:
+    matchLabels:
+      pv: nextcloud1

@@ -1,0 +1,75 @@
+# Default values for nextcloud.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: wonderfall/nextcloud
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: nextcloud.local
+      paths: ['/']
+    - host: nextcloud.ilu.ninja
+      paths: ['/']
+
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+environment:
+  uploadMaxSize: 10G
+  apcShmSize: 128M
+  opcacheMemSize: "128"
+  cronPeriod: 15m
+  tz: Etc/UTC
+  adminUser: xiao7
+  adminPassword: Abc123!@#
+  domain: localhost
+  dbType: mysql
+  dbName: nextcloud
+  dbUser: nextcloudadm
+  dbPassword: password
+  dbHost: mysql1-mysql
+
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  existingClaim: nextcloud1-pvc
+  size: 500Gi
+  select: nextcloud
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

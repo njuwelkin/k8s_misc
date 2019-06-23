@@ -1,0 +1,17 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: piwigo1-pvc
+  labels:
+    app.kubernetes.io/name: piwigo
+    app.kubernetes.io/instance: piwigo1
+    app.kubernetes.io/version: "1.0"
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "50Gi"
+  selector:
+    matchLabels:
+      pv: piwigo1

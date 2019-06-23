@@ -1,0 +1,97 @@
+apiVersion: apps/v1 #apps/v1beta2 #extensions/v1beta1 #apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nextcloud.fullname" . }}
+  labels:
+{{ include "nextcloud.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "nextcloud.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "nextcloud.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: UPLOAD_MAX_SIZE
+              value: {{ .Values.environment.uploadMaxSize }}
+            - name: APC_SHM_SIZE
+              value: {{ .Values.environment.apcShmSize }}
+            #- name: OPCACHE_MEM_SIZE
+            #  value: {{ .Values.environment.opcacheMemSize }}
+            - name: CRON_PERIOD
+              value: {{ .Values.environment.cronPeriod }}
+            - name: TZ
+              value: {{ .Values.environment.tz }}
+            - name: ADMIN_USER
+              value: {{ .Values.environment.adminUser }}
+            - name: ADMIN_PASSWORD
+              value: {{ .Values.environment.adminPassword }}
+            - name: DOMAIN
+              value: {{ .Values.environment.domain }}
+            - name: DB_TYPE
+              value: {{ .Values.environment.dbType }}
+            - name: DB_NAME
+              value: {{ .Values.environment.dbName }}
+            - name: DB_USER
+              value: {{ .Values.environment.dbUser }}
+            - name: DB_PASSWORD
+              value: {{ .Values.environment.dbPassword }}
+            - name: DB_HOST
+              value: {{ .Values.environment.dbHost }}
+          command: []
+          ports:
+            - name: http
+              containerPort: 80
+              #protocol: TCP
+          #livenessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http
+          #readinessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+              subPath: data
+            - name: data
+              mountPath: /config
+              subPath: config
+            - name: data
+              mountPath: /apps2
+              subPath: apps
+            - name: data
+              mountPath: /themes
+              subPath: themes
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "nextcloud.fullname" .) }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
