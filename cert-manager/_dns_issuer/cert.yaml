@@ -1,0 +1,24 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: biubiu-org-dns
+  namespace: tmp
+spec:
+  secretName: quickstart-example-tls
+  issuerRef:
+    name: letsencrypt-staging-dns
+  commonName: '*.biubiu.org'
+  dnsNames:
+  - example.com
+  - foo.com
+  acme:
+    config:
+    - dns01:
+        provider: prod-dns
+      domains:
+      - '*.example.com'
+      - example.com
+    - dns01:
+        provider: cf-dns
+      domains:
+      - foo.com

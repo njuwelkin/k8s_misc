@@ -1,17 +1,17 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: mariadb1-pvc
+  name: owncloud1-pvc
   namespace: web
   labels:
-    app: mariadb1-pvc
+    app: owncloud1-pvc
 spec:
   accessModes:
     - "ReadWriteOnce"
   resources:
     requests:
-      storage: "10Gi"
+      storage: "20Gi"
   selector:
     matchLabels:
-      pv: mariadb1
+      pv: owncloud1
 

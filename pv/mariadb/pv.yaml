@@ -11,4 +11,4 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /home/data/web/mariadb
+    path: /var/k8s_pv/web/mariadb

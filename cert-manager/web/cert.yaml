@@ -1,0 +1,27 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: biubiu-cert-prod
+  namespace: web
+spec:
+  secretName: biubiu-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: biubiu.org
+  dnsNames:
+  - biubiu.org
+  - www.biubiu.org
+  - blog.biubiu.org
+  - album.biubiu.org
+  - cloud.biubiu.org
+  acme:
+    config:
+    - http01:
+        ingressClass: nginx
+      domains:
+      - biubiu.org
+      - www.biubiu.org
+      - blog.biubiu.org
+      - album.biubiu.org
+      - cloud.biubiu.org
